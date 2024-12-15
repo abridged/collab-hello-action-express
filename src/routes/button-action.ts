@@ -68,6 +68,7 @@ router.get("/metadata", function (req, res) {
     version: { name: "0.0.1" },
     website: "https://collab.land",
     description: "An example Collab.Land action",
+    shortDescription: "A short description for the miniapp card"
   });
   const metadata: DiscordActionMetadata = {
     /**
@@ -112,9 +113,11 @@ router.get("/metadata", function (req, res) {
 
 router.post("/interactions", async function (req, res) {
   const verifier = new SignatureVerifier();
-  verifier.verify(req, res);
-  const result = await handle(req.body);
-  res.send(result);
+  const verified = verifier.verify(req, res);
+  if (verified) {
+    const result = await handle(req.body);
+    res.send(result);
+  }
 });
 
 export default router;
